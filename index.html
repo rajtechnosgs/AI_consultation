@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meridian — AI Agents That Run Your Business Operations</title>
+<meta name="description" content="Meridian designs and operates custom AI agents that handle sales follow-up, support, and back-office work around the clock, so your team can focus on growth.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --ink:#0d1015;
+    --ink-soft:#12161c;
+    --panel:#171c24;
+    --line: rgba(237,234,226,0.12);
+    --line-strong: rgba(237,234,226,0.22);
+    --bone:#eeeae1;
+    --bone-line: rgba(13,16,21,0.12);
+    --text-hi:#eeeae1;
+    --text-lo:#9aa1ac;
+    --text-ink-hi:#14161a;
+    --text-ink-lo:#585c63;
+    --amber:#e8a33d;
+    --amber-soft: rgba(232,163,61,0.14);
+    --steel:#7fa8c9;
+    --radius: 3px;
+    --maxw: 1180px;
+    font-size: 16px;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--text-hi);
+    font-family:'IBM Plex Sans', -apple-system, sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    line-height:1.12;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  p{ margin:0; }
+  a{ color:inherit; text-decoration:none; }
+  ul{ margin:0; padding:0; list-style:none; }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+
+  img,svg{ display:block; max-width:100%; }
+
+  :focus-visible{
+    outline: 2px solid var(--amber);
+    outline-offset: 3px;
+  }
+
+  .wrap{
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:0 32px;
+  }
+
+  @media (max-width: 720px){
+    .wrap{ padding:0 20px; }
+    :root{ font-size:15px; }
+  }
+
+  /* ---------- NAV ---------- */
+  header.site{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    background:rgba(13,16,21,0.86);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    height:72px;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600; font-size:1.05rem;
+    color:var(--text-hi);
+  }
+  .brand .mark{
+    width:22px; height:22px; flex:none;
+  }
+  .nav-links{
+    display:flex; align-items:center; gap:34px;
+  }
+  .nav-links a{
+    font-size:0.92rem; color:var(--text-lo);
+    transition:color .15s ease;
+  }
+  .nav-links a:hover{ color:var(--text-hi); }
+  .nav-cta{
+    padding:10px 18px;
+    border:1px solid var(--line-strong);
+    border-radius:var(--radius);
+    font-size:0.88rem;
+    color:var(--text-hi);
+    transition: border-color .15s ease, background .15s ease;
+    white-space:nowrap;
+  }
+  .nav-cta:hover{ border-color:var(--amber); background:var(--amber-soft); }
+  .nav-toggle{ display:none; }
+
+  @media (max-width: 860px){
+    .nav-links{ display:none; }
+    .nav-toggle{
+      display:flex; align-items:center; justify-content:center;
+      width:38px; height:38px; border:1px solid var(--line-strong);
+      border-radius:var(--radius); background:none; color:var(--text-hi);
+      font-size:1.1rem; cursor:pointer;
+    }
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:168px 0 96px;
+    background:
+      radial-gradient(680px 420px at 82% -10%, rgba(232,163,61,0.10), transparent 60%),
+      var(--ink);
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap:64px;
+    align-items:center;
+  }
+  .eyebrow-line{
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:22px;
+    color:var(--text-lo);
+    font-size:0.86rem;
+  }
+  .eyebrow-line .dot{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--amber);
+    box-shadow:0 0 0 3px var(--amber-soft);
+  }
+  .hero h1{
+    font-size:clamp(2.2rem, 4vw, 3.3rem);
+    color:var(--text-hi);
+    max-width:15ch;
+  }
+  .hero-sub{
+    margin-top:22px;
+    font-size:1.08rem;
+    color:var(--text-lo);
+    max-width:46ch;
+  }
+  .hero-actions{
+    margin-top:34px;
+    display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+  }
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:14px 22px;
+    border-radius:var(--radius);
+    font-size:0.94rem; font-weight:500;
+    transition: transform .15s ease, background .15s ease, border-color .15s ease;
+  }
+  .btn-primary{
+    background:var(--amber);
+    color:#211405;
+  }
+  .btn-primary:hover{ transform:translateY(-1px); background:#f0af52; }
+  .btn-ghost{
+    border:1px solid var(--line-strong);
+    color:var(--text-hi);
+  }
+  .btn-ghost:hover{ border-color:var(--text-hi); }
+
+  .hero-meta{
+    margin-top:40px;
+    display:flex; gap:34px;
+    color:var(--text-lo);
+    font-size:0.86rem;
+  }
+  .hero-meta b{
+    display:block;
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--text-hi);
+    font-size:1.1rem;
+    font-weight:500;
+  }
+
+  /* console panel */
+  .console{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .console-bar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 16px;
+    border-bottom:1px solid var(--line);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem;
+    color:var(--text-lo);
+  }
+  .console-bar .live{
+    display:flex; align-items:center; gap:7px;
+    color:var(--amber);
+  }
+  .console-bar .live span.blip{
+    width:6px; height:6px; border-radius:50%;
+    background:var(--amber);
+  }
+  .console-body{
+    padding:20px 18px;
+    height:300px;
+    overflow:hidden;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.82rem;
+  }
+  .console-line{
+    display:flex; gap:10px;
+    padding:6px 0;
+    color:var(--text-lo);
+    border-bottom:1px dashed rgba(237,234,226,0.06);
+    opacity:0;
+    transform:translateY(4px);
+    animation: line-in .5s ease forwards;
+  }
+  .console-line .t{ color:#5c636e; flex:none; }
+  .console-line .tag{
+    flex:none;
+    padding:1px 6px;
+    border-radius:2px;
+    font-size:0.7rem;
+  }
+  .tag-done{ background:rgba(126,197,150,0.14); color:#8fd1a7; }
+  .tag-work{ background:var(--amber-soft); color:var(--amber); }
+  .tag-note{ background:rgba(127,168,201,0.14); color:var(--steel); }
+  .console-line .msg{ color:var(--text-hi); }
+
+  @keyframes line-in{
+    to{ opacity:1; transform:translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .console-line{ animation:none; opacity:1; transform:none; }
+  }
+
+  /* ---------- INDUSTRIES STRIP ---------- */
+  .strip{
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    padding:26px 0;
+  }
+  .strip-row{
+    display:flex; flex-wrap:wrap;
+    gap:0;
+    color:var(--text-lo);
+    font-size:0.88rem;
+  }
+  .strip-row span{
+    padding:6px 26px;
+    border-left:1px solid var(--line);
+  }
+  .strip-row span:first-child{ border-left:none; padding-left:0; }
+
+  /* ---------- SECTION HEADS ---------- */
+  .section{ padding:110px 0; }
+  .section-head{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:40px;
+    margin-bottom:64px;
+    align-items:end;
+  }
+  .section-head h2{
+    font-size:clamp(1.7rem, 2.6vw, 2.3rem);
+  }
+  .section-head p{
+    color:var(--text-lo);
+    font-size:1rem;
+    max-width:44ch;
+  }
+  @media (max-width: 760px){
+    .section-head{ grid-template-columns:1fr; }
+    .section{ padding:76px 0; }
+  }
+
+  /* ---------- CAPABILITIES (bone band, ledger style) ---------- */
+  .band-bone{
+    background:var(--bone);
+    color:var(--text-ink-hi);
+  }
+  .band-bone .section-head p{ color:var(--text-ink-lo); }
+
+  .ledger-row{
+    display:grid;
+    grid-template-columns: 280px 1fr 90px;
+    gap:28px;
+    align-items:start;
+    padding:30px 0;
+    border-top:1px solid var(--bone-line);
+  }
+  .ledger-row:last-child{ border-bottom:1px solid var(--bone-line); }
+  .ledger-row .icon{
+    width:34px; height:34px;
+    color:#b5762a;
+  }
+  .ledger-title{
+    display:flex; align-items:center; gap:16px;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:1.15rem;
+  }
+  .ledger-desc{ color:var(--text-ink-lo); max-width:56ch; font-size:0.98rem; }
+  .ledger-num{
+    font-family:'IBM Plex Mono', monospace;
+    color:#b5762a;
+    font-size:0.85rem;
+    text-align:right;
+  }
+  @media (max-width: 760px){
+    .ledger-row{ grid-template-columns:1fr; gap:12px; }
+    .ledger-num{ text-align:left; }
+  }
+
+  /* ---------- PROCESS (dark, numbered — genuine sequence) ---------- */
+  .process-grid{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap:0;
+    position:relative;
+  }
+  .process-grid::before{
+    content:"";
+    position:absolute;
+    top:19px; left:0; right:0;
+    height:1px;
+    background:var(--line-strong);
+  }
+  .process-step{
+    padding-right:28px;
+    position:relative;
+  }
+  .step-num{
+    width:38px; height:38px;
+    border-radius:50%;
+    background:var(--ink);
+    border:1px solid var(--line-strong);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--amber);
+    font-size:0.85rem;
+    position:relative; z-index:2;
+    margin-bottom:26px;
+  }
+  .process-step h3{
+    font-size:1.1rem;
+    margin-bottom:10px;
+    color:var(--text-hi);
+  }
+  .process-step p{
+    color:var(--text-lo);
+    font-size:0.94rem;
+  }
+  @media (max-width: 860px){
+    .process-grid{ grid-template-columns:1fr; gap:40px; }
+    .process-grid::before{ display:none; }
+  }
+
+  /* ---------- METRICS ---------- */
+  .metrics{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .metric{
+    padding:34px 30px;
+    border-left:1px solid var(--line);
+  }
+  .metric:first-child{ border-left:none; padding-left:0; }
+  .metric b{
+    display:block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:2.1rem;
+    font-weight:500;
+    color:var(--text-hi);
+  }
+  .metric span{
+    display:block;
+    margin-top:8px;
+    font-size:0.88rem;
+    color:var(--text-lo);
+  }
+  @media (max-width: 760px){
+    .metrics{ grid-template-columns:1fr 1fr; row-gap:30px; }
+    .metric{ border-left:none; padding:0; }
+    .metric:nth-child(odd){ border-right:1px solid var(--line); padding-right:20px; }
+  }
+
+  /* ---------- TESTIMONIALS ---------- */
+  .reviews-summary{
+    display:flex; align-items:center; gap:18px;
+    margin-bottom:50px;
+    flex-wrap:wrap;
+  }
+  .stars{ display:flex; gap:4px; }
+  .stars svg{ width:18px; height:18px; fill:var(--amber); }
+  .reviews-summary .score{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:1rem;
+    color:var(--text-hi);
+  }
+  .reviews-summary .count{ color:var(--text-lo); font-size:0.9rem; }
+
+  .review-list{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  .review{
+    background:var(--ink);
+    padding:30px 28px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
+  .review .stars svg{ width:14px; height:14px; }
+  .review blockquote{
+    margin:0;
+    font-size:0.98rem;
+    color:var(--text-hi);
+    line-height:1.6;
+  }
+  .review-who{
+    margin-top:auto;
+    display:flex; align-items:center; gap:12px;
+  }
+  .review-avatar{
+    width:34px; height:34px;
+    border-radius:50%;
+    background:var(--amber-soft);
+    color:var(--amber);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.8rem;
+    flex:none;
+  }
+  .review-who .name{ font-size:0.9rem; color:var(--text-hi); }
+  .review-who .role{ font-size:0.8rem; color:var(--text-lo); font-family:'IBM Plex Mono', monospace; }
+
+  @media (max-width: 860px){
+    .review-list{ grid-template-columns:1fr; }
+  }
+
+  /* ---------- CTA / CONTACT ---------- */
+  .cta-band{
+    background:var(--panel);
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .cta-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:60px;
+    align-items:start;
+  }
+  .cta-grid h2{
+    font-size:clamp(1.7rem, 2.8vw, 2.3rem);
+    max-width:14ch;
+  }
+  .cta-grid > div:first-child p{
+    margin-top:20px;
+    color:var(--text-lo);
+    max-width:40ch;
+  }
+  .cta-points{
+    margin-top:30px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .cta-points li{
+    display:flex; gap:10px;
+    align-items:flex-start;
+    font-size:0.92rem;
+    color:var(--text-hi);
+  }
+  .cta-points svg{ width:16px; height:16px; margin-top:3px; color:var(--amber); flex:none; }
+
+  form.contact{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .field-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+  }
+  form.contact label{
+    display:block;
+    font-size:0.8rem;
+    color:var(--text-lo);
+    margin-bottom:7px;
+  }
+  form.contact input,
+  form.contact textarea{
+    width:100%;
+    background:var(--ink);
+    border:1px solid var(--line-strong);
+    border-radius:var(--radius);
+    padding:12px 14px;
+    color:var(--text-hi);
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:0.94rem;
+  }
+  form.contact input:focus,
+  form.contact textarea:focus{
+    border-color:var(--amber);
+  }
+  form.contact textarea{ resize:vertical; min-height:110px; }
+  form.contact button{
+    margin-top:6px;
+    align-self:flex-start;
+    border:none;
+    cursor:pointer;
+    font-family:'IBM Plex Sans', sans-serif;
+  }
+  .form-note{
+    font-size:0.78rem;
+    color:var(--text-lo);
+    margin-top:2px;
+  }
+  @media (max-width: 860px){
+    .cta-grid{ grid-template-columns:1fr; gap:40px; }
+    .field-row{ grid-template-columns:1fr; }
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    padding:48px 0 40px;
+  }
+  .foot-grid{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    flex-wrap:wrap;
+    gap:24px;
+  }
+  .foot-links{
+    display:flex; gap:28px;
+    color:var(--text-lo);
+    font-size:0.86rem;
+  }
+  .foot-links a:hover{ color:var(--text-hi); }
+  .foot-copy{
+    color:#5c636e;
+    font-size:0.8rem;
+    margin-top:30px;
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap nav">
+    <a href="#top" class="brand">
+      <svg class="mark" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10.5" stroke="#e8a33d" stroke-width="1.4"/>
+        <path d="M12 3.5 15 12 12 20.5 9 12 12 3.5Z" fill="#e8a33d"/>
+      </svg>
+      Meridian
+    </a>
+    <nav class="nav-links">
+      <a href="#capabilities">Capabilities</a>
+      <a href="#process">Process</a>
+      <a href="#results">Results</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#contact" class="nav-cta">Book a call</a>
+    </nav>
+    <button class="nav-toggle" aria-label="Menu">☰</button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow-line"><span class="dot"></span>Now onboarding Q4 2026 clients</div>
+        <h1>AI agents that run the parts of your business that can't wait until Monday.</h1>
+        <p class="hero-sub">Meridian designs, deploys, and operates custom AI agents that qualify leads, answer customers, and clear back-office work in real time — so your team spends its hours on the decisions only they can make.</p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn btn-primary">Book a strategy call</a>
+          <a href="#capabilities" class="btn btn-ghost">See what agents do</a>
+        </div>
+        <div class="hero-meta">
+          <div><b>24/7</b>coverage, no shift gaps</div>
+          <div><b>&lt; 3 wks</b>from kickoff to live</div>
+          <div><b>11 sectors</b>currently operating</div>
+        </div>
+      </div>
+
+      <div class="console">
+        <div class="console-bar">
+          <span>agents.meridian / production</span>
+          <span class="live"><span class="blip"></span>live</span>
+        </div>
+        <div class="console-body" id="consoleBody"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INDUSTRY STRIP -->
+  <div class="strip">
+    <div class="wrap strip-row">
+      <span>Home services</span>
+      <span>Healthcare & clinics</span>
+      <span>Logistics</span>
+      <span>Financial services</span>
+      <span>Real estate</span>
+      <span>E-commerce</span>
+    </div>
+  </div>
+
+  <!-- CAPABILITIES -->
+  <section class="section band-bone" id="capabilities">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Four agents. One operating layer for your business.</h2>
+        <p>Each agent is built on your data, your tone, and your tools — not a generic chatbot bolted onto your website.</p>
+      </div>
+
+      <div>
+        <div class="ledger-row">
+          <div class="ledger-title">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 12h4l2 6 4-14 2 6h4"/></svg>
+            Sales response agent
+          </div>
+          <div class="ledger-desc">Replies to every inbound lead inside 60 seconds, qualifies them against your criteria, and books the call directly onto your team's calendar.</div>
+          <div class="ledger-num">01 / SALES</div>
+        </div>
+
+        <div class="ledger-row">
+          <div class="ledger-title">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 5h16v11H8l-4 4V5Z"/></svg>
+            Support & retention agent
+          </div>
+          <div class="ledger-desc">Handles order status, billing questions, and troubleshooting across chat, email, and phone, and escalates only the cases that truly need a human.</div>
+          <div class="ledger-num">02 / SUPPORT</div>
+        </div>
+
+        <div class="ledger-row">
+          <div class="ledger-title">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 4h16v6H4zM4 14h10v6H4z"/></svg>
+            Back-office agent
+          </div>
+          <div class="ledger-desc">Reconciles invoices, updates your CRM, and files the paperwork your team currently does at 9pm — matched to your existing spreadsheets and systems.</div>
+          <div class="ledger-num">03 / OPS</div>
+        </div>
+
+        <div class="ledger-row">
+          <div class="ledger-title">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l3 3M15 15l3 3M18 6l-3 3M9 15l-3 3"/></svg>
+            Insights agent
+          </div>
+          <div class="ledger-desc">Reads every conversation your other agents have, and sends your team a plain-language brief each week on what customers are actually asking for.</div>
+          <div class="ledger-num">04 / INSIGHT</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="section" id="process">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>How an agent goes live</h2>
+        <p>A fixed four-step engagement. You'll know the scope and the timeline before you sign anything.</p>
+      </div>
+
+      <div class="process-grid">
+        <div class="process-step">
+          <div class="step-num">1</div>
+          <h3>Discover</h3>
+          <p>We shadow your sales and support workflow for a week and map exactly where an agent should — and shouldn't — take over.</p>
+        </div>
+        <div class="process-step">
+          <div class="step-num">2</div>
+          <h3>Build</h3>
+          <p>Your agent is trained on your product, pricing, and policies, then tested against real past conversations before it ever talks to a customer.</p>
+        </div>
+        <div class="process-step">
+          <div class="step-num">3</div>
+          <h3>Deploy</h3>
+          <p>The agent goes live on a shadow track alongside your team first, then takes full ownership once accuracy holds above your bar.</p>
+        </div>
+        <div class="process-step">
+          <div class="step-num">4</div>
+          <h3>Operate</h3>
+          <p>We monitor every conversation, retrain monthly on new edge cases, and hand you a straight report on what changed and why.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- METRICS -->
+  <section class="section" id="results" style="padding-top:0;">
+    <div class="wrap">
+      <div class="metrics">
+        <div class="metric">
+          <b>68%</b>
+          <span>of inbound leads get a qualified reply within one minute</span>
+        </div>
+        <div class="metric">
+          <b>4.2x</b>
+          <span>more after-hours leads converted to booked calls</span>
+        </div>
+        <div class="metric">
+          <b>31 hrs</b>
+          <span>saved per team, per week, on repetitive tickets</span>
+        </div>
+        <div class="metric">
+          <b>19 days</b>
+          <span>average time from kickoff to a live agent</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section class="section" id="reviews">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>What clients say once the agent is live</h2>
+        <p>A sample of feedback from businesses running Meridian agents in production today.</p>
+      </div>
+
+      <div class="reviews-summary">
+        <div class="stars" aria-hidden="true">
+          <svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L10 15l-5.6 3.1 1.4-6.3L1 7.5l6.4-.6L10 1Z"/></svg>
+          <svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L10 15l-5.6 3.1 1.4-6.3L1 7.5l6.4-.6L10 1Z"/></svg>
+          <svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L10 15l-5.6 3.1 1.4-6.3L1 7.5l6.4-.6L10 1Z"/></svg>
+          <svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L10 15l-5.6 3.1 1.4-6.3L1 7.5l6.4-.6L10 1Z"/></svg>
+          <svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L10 15l-5.6 3.1 1.4-6.3L1 7.5l6.4-.6L10 1Z"/></svg>
+        </div>
+        <span class="score">4.9 / 5</span>
+        <span class="count">based on 63 client reviews since launch</span>
+      </div>
+
+      <div class="review-list">
+        <article class="review">
+          <div class="stars" aria-hidden="true">
+            <svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L10 15l-5.6 3.1 1.4-6.3L1 7.5l6.4-.6L10 1Z"/></svg>
+            <svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L10 15l-5.6 3.1 1.4-6.3L1 7.5l6.4-.6L10 1Z"/></svg>
+            <svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L10 15l-5.6 3.1 1.4-6.3L1 7.5l6.4-.6L10 1Z"/></svg>
+            <svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L10 15l-5.6 3.1 1.4-6.3L1 7.5l6.4-.6L10 1Z"/></svg>
+            <svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L10 15l-5.6 3.1 1.4-6.3L1 7.5l6.4-.6L10 1Z"/></svg>
+          </div>
+          <blockquote>Our agent now handles the 9pm-to-9am window, which used to just be a black hole for leads. We're closing deals that came in while we were asleep.</blockquote>
+          <div class="review-who">
+            <div class="review-avatar">DR</div>
+            <div>
+              <div class="name">Dana Reyes</div>
+              <div class="role">Owner, Coastal Home Services</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="review">
+          <div class="stars" aria-hidden="true">
+            <svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L10 15l-5.6 3.1 1.4-6.3L1 7.5l6.4-.6L10 1Z"/></svg>
+            <svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L10 15l-5.6 3.1 1.4-6.3L1 7.5l6.4-.6L10 1Z"/></svg>
+            <svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L10 15l-5.6 3.1 1.4-6.3L1 7.5l6.4-.6L10 1Z"/></svg>
+            <svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L10 15l-5.6 3.1 1.4-6.3L1 7.5l6.4-.6L10 1Z"/></svg>
+            <svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L10 15l-5.6 3.1 1.4-6.3L1 7.5l6.4-.6L10 1Z"/></svg>
+          </div>
+          <blockquote>The onboarding was faster than any vendor call we'd had before. Three weeks in, support tickets in our inbox dropped by more than half.</blockquote>
+          <div class="review-who">
+            <div class="review-avatar">MT</div>
+            <div>
+              <div class="name">Marcus Tran</div>
+              <div class="role">Head of Ops, Lattice Logistics</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="review">
+          <div class="stars" aria-hidden="true">
+            <svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L10 15l-5.6 3.1 1.4-6.3L1 7.5l6.4-.6L10 1Z"/></svg>
+            <svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L10 15l-5.6 3.1 1.4-6.3L1 7.5l6.4-.6L10 1Z"/></svg>
+            <svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L10 15l-5.6 3.1 1.4-6.3L1 7.5l6.4-.6L10 1Z"/></svg>
+            <svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L10 15l-5.6 3.1 1.4-6.3L1 7.5l6.4-.6L10 1Z"/></svg>
+            <svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L10 15l-5.6 3.1 1.4-6.3L1 7.5l6.4-.6L10 1Z"/></svg>
+          </div>
+          <blockquote>What sold us was the shadow-mode testing. We watched the agent handle real tickets for two weeks before it ever touched a live customer.</blockquote>
+          <div class="review-who">
+            <div class="review-avatar">SK</div>
+            <div>
+              <div class="name">Priya Shah</div>
+              <div class="role">COO, Fieldstone Clinics</div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA / CONTACT -->
+  <section class="cta-band" id="contact">
+    <div class="wrap section cta-grid">
+      <div>
+        <h2>Let's find the first agent worth building.</h2>
+        <p>Tell us about your business and where the work is piling up. We'll come back with a scoped plan, not a sales deck.</p>
+        <ul class="cta-points">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>No cost for the initial discovery call</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>Fixed-scope proposal within 5 business days</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>You keep the data and the agent, always</li>
+        </ul>
+      </div>
+
+      <form class="contact" action="mailto:hello@meridian-agents.com" method="post" enctype="text/plain">
+        <div class="field-row">
+          <div>
+            <label for="name">Full name</label>
+            <input id="name" name="name" type="text" required>
+          </div>
+          <div>
+            <label for="company">Company</label>
+            <input id="company" name="company" type="text" required>
+          </div>
+        </div>
+        <div class="field-row">
+          <div>
+            <label for="email">Work email</label>
+            <input id="email" name="email" type="email" required>
+          </div>
+          <div>
+            <label for="phone">Phone (optional)</label>
+            <input id="phone" name="phone" type="tel">
+          </div>
+        </div>
+        <div>
+          <label for="message">Where is the work piling up right now?</label>
+          <textarea id="message" name="message" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Send request</button>
+        <p class="form-note">Replace the form's mailto action with your provider of choice (e.g. Formspree, Basin) before publishing — plain mailto forms open the visitor's own email client rather than sending silently.</p>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap foot-grid">
+    <a href="#top" class="brand">
+      <svg class="mark" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10.5" stroke="#e8a33d" stroke-width="1.4"/>
+        <path d="M12 3.5 15 12 12 20.5 9 12 12 3.5Z" fill="#e8a33d"/>
+      </svg>
+      Meridian
+    </a>
+    <div class="foot-links">
+      <a href="#capabilities">Capabilities</a>
+      <a href="#process">Process</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+  <div class="wrap foot-copy">© 2026 Meridian Agents. All rights reserved.</div>
+</footer>
+
+<script>
+  var logLines = [
+    { t: "09:41:02", tag: "done", tagText: "done", msg: "Qualified inbound lead — Coastal Home Services, booked 2:30pm call" },
+    { t: "09:41:19", tag: "work", tagText: "working", msg: "Drafting reply to billing question — order #38214" },
+    { t: "09:42:04", tag: "note", tagText: "note", msg: "Escalated refund request above $500 threshold to human review" },
+    { t: "09:42:47", tag: "done", tagText: "done", msg: "Updated CRM record for 6 leads captured overnight" },
+    { t: "09:43:15", tag: "work", tagText: "working", msg: "Answering shipping delay question via SMS" },
+    { t: "09:44:02", tag: "done", tagText: "done", msg: "Weekly insight brief compiled — 3 recurring objections found" },
+    { t: "09:44:38", tag: "note", tagText: "note", msg: "New FAQ pattern detected, flagged for training review" },
+    { t: "09:45:10", tag: "done", tagText: "done", msg: "Follow-up sequence sent to 14 quoted-but-not-booked leads" }
+  ];
+
+  var body = document.getElementById('consoleBody');
+  var i = 0;
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function addLine(){
+    var item = logLines[i % logLines.length];
+    var row = document.createElement('div');
+    row.className = 'console-line';
+    row.innerHTML =
+      '<span class="t">' + item.t + '</span>' +
+      '<span class="tag tag-' + item.tag + '">' + item.tagText + '</span>' +
+      '<span class="msg">' + item.msg + '</span>';
+    body.appendChild(row);
+    while (body.children.length > 7) {
+      body.removeChild(body.firstChild);
+    }
+    body.scrollTop = body.scrollHeight;
+    i++;
+  }
+
+  if (reduceMotion) {
+    logLines.forEach(addLine);
+  } else {
+    addLine();
+    setInterval(addLine, 2200);
+  }
+</script>
+
+</body>
+</html>
