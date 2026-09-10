@@ -565,21 +565,6 @@
     margin-top:30px;
   }
 </style>
-  <script>
-  var vapiInstance = null;
-  (function (d, t) {
-    var g = d.createElement(t),
-      s = d.getElementsByTagName(t)[0];
-    g.src =
-      "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
-    g.defer = true;
-    g.async = true;
-    s.parentNode.insertBefore(g, s);
-  })(document, "script");
-</script>
-  <script src="https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js" defer></script>
-
-
 </head>
   
 <body>
@@ -599,11 +584,6 @@
       <a href="#results">Results</a>
       <a href="#reviews">Reviews</a>
       <a href="#contact" class="nav-cta">Book a call</a>
-      <vapi-widget
-  public-key="f3734ff9-a2cd-4929-afa3-beb975586424"
-  assistant-id="bb6d70e9-a2ee-43da-86ec-dd8aba1e968c"
-  mode="floating"
-></vapi-widget>
     </nav>
     <button class="nav-toggle" aria-label="Menu">☰</button>
   </div>
@@ -938,6 +918,29 @@
     setInterval(addLine, 2200);
   }
 </script>
+  <!-- VAPI WIDGET START -->
+<script>
+  var vapiInstance = null;
+  (function (d, t) {
+    var g = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    g.src =
+      "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
+    g.defer = true;
+    g.async = true;
+    s.parentNode.insertBefore(g, s);
+  })(document, "script");
+</script>
+
+<vapi-widget
+  public-key="f3734ff9-a2cd-4929-afa3-beb975586424"
+  assistant-id="bb6d70e9-a2ee-43da-86ec-dd8aba1e968c"
+  mode="floating"
+></vapi-widget>
+<!-- VAPI WIDGET END -->
+
+</body>
+</html>
 
 </body>
 </html>
