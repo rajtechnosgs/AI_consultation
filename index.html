@@ -918,26 +918,17 @@
     setInterval(addLine, 2200);
   }
 </script>
-  <!-- VAPI WIDGET START -->
-<script>
-  var vapiInstance = null;
-  (function (d, t) {
-    var g = d.createElement(t),
-      s = d.getElementsByTagName(t)[0];
-    g.src =
-      "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
-    g.defer = true;
-    g.async = true;
-    s.parentNode.insertBefore(g, s);
-  })(document, "script");
-</script>
+ 
+<!-- VAPI WIDGET START -->
+<script src="https://unpkg.com/@vapi-ai/client-sdk-react/dist/embed/widget.umd.js" async type="text/javascript"></script>
 
 <vapi-widget
   public-key="4a054d5b-e998-4066-b70d-e33f9f068bad"
   assistant-id="bb6d70e9-a2ee-43da-86ec-dd8aba1e968c"
-  mode="floating"
+  mode="voice"
 ></vapi-widget>
 <!-- VAPI WIDGET END -->
+
 
 </body>
 </html>
